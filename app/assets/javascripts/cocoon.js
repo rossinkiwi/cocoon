@@ -86,14 +86,12 @@
     $.each(new_contents, function(i, node) {
       var contentNode = $(node);
 
-      var before_insert = jQuery.Event('cocoon:before-insert');
-      insertionNodeElem.trigger(before_insert, [contentNode]);
+      insertionNodeElem.trigger('cocoon:before-insert', [contentNode]);
 
-      if (!before_insert.isDefaultPrevented()) {
-        // allow any of the jquery dom manipulation methods (after, before, append, prepend, etc)
-        // to be called on the node.  allows the insertion node to be the parent of the inserted
-        // code and doesn't force it to be a sibling like after/before does. default: 'before'
-        var addedContent = insertionNodeElem[insertionMethod](contentNode);
+      // allow any of the jquery dom manipulation methods (after, before, append, prepend, etc)
+      // to be called on the node.  allows the insertion node to be the parent of the inserted
+      // code and doesn't force it to be a sibling like after/before does. default: 'before'
+      var addedContent = insertionNodeElem[insertionMethod](contentNode);
 
       // Added by Ross to allow value and a display string to be passed into created nested field
       if (typeof(field_value) != 'undefined' && field_value != null && typeof(selector_for_field_value) != 'undefined' && selector_for_field_value != null) {
@@ -116,22 +114,19 @@
 
     e.preventDefault();
 
-    var before_remove = jQuery.Event('cocoon:before-remove');
-    trigger_node.trigger(before_remove, [node_to_delete]);
+    trigger_node.trigger('cocoon:before-remove', [node_to_delete]);
 
-    if (!before_remove.isDefaultPrevented()) {
-      var timeout = trigger_node.data('remove-timeout') || 0;
+    var timeout = trigger_node.data('remove-timeout') || 0;
 
-      setTimeout(function() {
-        if ($this.hasClass('dynamic')) {
-            node_to_delete.detach();
-        } else {
-            $this.prev("input[type=hidden]").val("1");
-            node_to_delete.hide();
-        }
-        trigger_node.trigger('cocoon:after-remove', [node_to_delete]);
-      }, timeout);
-    }
+    setTimeout(function() {
+      if ($this.hasClass('dynamic')) {
+          node_to_delete.remove();
+      } else {
+          $this.prev("input[type=hidden]").val("1");
+          node_to_delete.hide();
+      }
+      trigger_node.trigger('cocoon:after-remove', [node_to_delete]);
+    }, timeout);
   });
 
 
