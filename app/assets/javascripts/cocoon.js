@@ -36,8 +36,10 @@
     }
 
   }
-
-  $(document).on('click', '.add_fields', function(e) {
+ 
+// Changed by Ross to allow value and a display string to be passed into created nested field
+//$(document).on('click', '.add_fields', function(e) {
+  $(document).on('click', '.add_fields', function(e, selector_for_field_value, field_value, selector_for_display_string, display_string) {
     e.preventDefault();
     var $this                 = $(this),
         assoc                 = $this.data('association'),
@@ -93,8 +95,16 @@
         // code and doesn't force it to be a sibling like after/before does. default: 'before'
         var addedContent = insertionNodeElem[insertionMethod](contentNode);
 
-        insertionNodeElem.trigger('cocoon:after-insert', [contentNode]);
+      // Added by Ross to allow value and a display string to be passed into created nested field
+      if (typeof(field_value) != 'undefined' && field_value != null && typeof(selector_for_field_value) != 'undefined' && selector_for_field_value != null) {
+        contentNode.find(selector_for_field_value).val(field_value);
       }
+      if (typeof(display_string) != 'undefined' && display_string != null && typeof(selector_for_display_string) != 'undefined' && selector_for_display_string != null) {
+        contentNode.find(selector_for_display_string).html(display_string);
+      }
+      //
+
+      insertionNodeElem.trigger('cocoon:after-insert', [contentNode]);
     });
   });
 
