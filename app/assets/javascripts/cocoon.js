@@ -43,7 +43,6 @@
 // fields_to_set_html is hash where:
 //   keys are jquery selectors and values are html to replace
 //$(document).on('click', '.add_fields', function(e) {
-//$(document).on('click', '.add_fields', function(e, selector_for_field_value, field_value, selector_for_display_string, display_string) {
   $(document).on('click', '.add_fields', function(e, fields_to_set_values, fields_to_set_html ) {
     e.preventDefault();
     var $this                 = $(this),
@@ -109,15 +108,6 @@
           contentNode.find(key).html(fields_to_set_html[key]);
         });
       }
-
-//      // Added by Ross to allow value and a display string to be passed into created nested field
-//      if (typeof(field_value) != 'undefined' && field_value != null && typeof(selector_for_field_value) != 'undefined' && selector_for_field_value != null) {
-//        contentNode.find(selector_for_field_value).val(field_value);
-//      }
-//      if (typeof(display_string) != 'undefined' && display_string != null && typeof(selector_for_display_string) != 'undefined' && selector_for_display_string != null) {
-//        contentNode.find(selector_for_display_string).html(display_string);
-//      }
-//      //
 
       insertionNodeElem.trigger('cocoon:after-insert', [contentNode]);
     });
