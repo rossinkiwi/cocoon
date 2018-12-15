@@ -38,8 +38,13 @@
   }
  
 // Changed by Ross to allow value and a display string to be passed into created nested field
+// fields_to_set_values is javascript hash where:
+//   keys are jquery selectors and values are the value to set for the fields matched by the selectors.
+// fields_to_set_html is hash where:
+//   keys are jquery selectors and values are html to replace
 //$(document).on('click', '.add_fields', function(e) {
-  $(document).on('click', '.add_fields', function(e, selector_for_field_value, field_value, selector_for_display_string, display_string) {
+//$(document).on('click', '.add_fields', function(e, selector_for_field_value, field_value, selector_for_display_string, display_string) {
+  $(document).on('click', '.add_fields', function(e, fields_to_set_values, fields_to_set_html ) {
     e.preventDefault();
     var $this                 = $(this),
         assoc                 = $this.data('association'),
@@ -93,14 +98,26 @@
       // code and doesn't force it to be a sibling like after/before does. default: 'before'
       var addedContent = insertionNodeElem[insertionMethod](contentNode);
 
-      // Added by Ross to allow value and a display string to be passed into created nested field
-      if (typeof(field_value) != 'undefined' && field_value != null && typeof(selector_for_field_value) != 'undefined' && selector_for_field_value != null) {
-        contentNode.find(selector_for_field_value).val(field_value);
+      // Added by Ross to allow field values and html to be passed into created nested field
+      if (typeof(fields_to_set_values) != 'undefined' && fields_to_set_values != null) {
+        Object.keys(fields_to_set_values).forEach(function(key) {
+          contentNode.find(key).val(fields_to_set_values[key]);
+        });
       }
-      if (typeof(display_string) != 'undefined' && display_string != null && typeof(selector_for_display_string) != 'undefined' && selector_for_display_string != null) {
-        contentNode.find(selector_for_display_string).html(display_string);
+      if (typeof(fields_to_set_html) != 'undefined' && fields_to_set_html != null) {
+        Object.keys(fields_to_set_html).forEach(function(key) {
+          contentNode.find(key).html(fields_to_set_html[key]);
+        });
       }
-      //
+
+//      // Added by Ross to allow value and a display string to be passed into created nested field
+//      if (typeof(field_value) != 'undefined' && field_value != null && typeof(selector_for_field_value) != 'undefined' && selector_for_field_value != null) {
+//        contentNode.find(selector_for_field_value).val(field_value);
+//      }
+//      if (typeof(display_string) != 'undefined' && display_string != null && typeof(selector_for_display_string) != 'undefined' && selector_for_display_string != null) {
+//        contentNode.find(selector_for_display_string).html(display_string);
+//      }
+//      //
 
       insertionNodeElem.trigger('cocoon:after-insert', [contentNode]);
     });
