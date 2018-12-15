@@ -43,7 +43,7 @@
 // fields_to_set_html is hash where:
 //   keys are jquery selectors and values are html to replace
 //$(document).on('click', '.add_fields', function(e) {
-  $(document).on('click', '.add_fields', function(e, fields_to_set_values, fields_to_set_html ) {
+  $(document).on('click', '.add_fields', function(e, emit_insertion_events, fields_to_set_values, fields_to_set_html ) {
     e.preventDefault();
     var $this                 = $(this),
         assoc                 = $this.data('association'),
@@ -58,6 +58,9 @@
         new_id                = create_new_id(),
         new_content           = content.replace(regexp_braced, newcontent_braced(new_id)),
         new_contents          = [];
+
+    // https://stackoverflow.com/questions/894860/set-a-default-parameter-value-for-a-javascript-function
+    emit_insertion_events = typeof emit_insertion_events !== 'undefined' ? emit_insertion_events : true;
 
 
     if (new_content == content) {
@@ -90,7 +93,9 @@
     $.each(new_contents, function(i, node) {
       var contentNode = $(node);
 
-      insertionNodeElem.trigger('cocoon:before-insert', [contentNode]);
+      if(emit_insertion_events) {
+        insertionNodeElem.trigger('cocoon:before-insert', [contentNode]);
+      }
 
       // allow any of the jquery dom manipulation methods (after, before, append, prepend, etc)
       // to be called on the node.  allows the insertion node to be the parent of the inserted
@@ -108,8 +113,11 @@
           contentNode.find(key).html(fields_to_set_html[key]);
         });
       }
+      
+      if(emit_insertion_events) {
+        insertionNodeElem.trigger('cocoon:after-insert', [contentNode]);
+      }
 
-      insertionNodeElem.trigger('cocoon:after-insert', [contentNode]);
     });
   });
 
